@@ -18,10 +18,6 @@ def play_sound(status=True):
     # Play the audio
     sd.play(y, sr)
     sd.wait()  # Wait until audio is done playing
-    sd.play(y, sr)
-    sd.wait()  # Wait until audio is done playing
-    sd.play(y, sr)
-    sd.wait()  # Wait until audio is done playing
 
 
 def request_data(department: int, service: int, date: str, headers: dict):
@@ -77,7 +73,7 @@ def fetch_dates(headers):
     if response.status_code == 200:
         try:
             data = response.json()
-            # print(data)
+            print(data)
             return [i["date"].split("T")[0] for i in data["data"]]
         except json.JSONDecodeError:
             print("Response is not valid JSON")
@@ -112,14 +108,36 @@ def control():
     #     # "2025-06-25"
     # ]
 
-    # departments = {65 : "Апостола", 74 : "Богданівська", 31: "Краматорськ"}
-    # departments = {65: "Апостола", 74: "Богданівська"}
-    departments = {65: "Апостола", 74: "Богданівська", 69: "Стрий"}
-    
+    # departments = {65: "Апостола", 74: "Богданівська", 31: "Краматорськ"}
+    departments = {65: "Апостола", 74: "Богданівська"}
+    # departments = {65: "Апостола", 74: "Богданівська", 69: "Стрий"}
+    results = []
+
     while True:
         # today = datetime.date.today()
         # dates = [today + datetime.timedelta(days=i) for i in range(21)]
         dates = fetch_dates(headers)
+        if not dates:
+            time.sleep(10)
+        #    continue
+            dates = [
+                "2025-06-09",
+                "2025-06-10",
+                "2025-06-11",
+                "2025-06-12",
+                "2025-06-13",
+                "2025-06-14",
+                "2025-06-15",
+                "2025-06-17",
+                "2025-06-18",
+                "2025-06-19",
+                "2025-06-20",
+                "2025-06-21",
+                "2025-06-22",
+                "2025-06-24",
+                "2025-06-25",
+            ]
+
         for date in dates[::-1]:
             for id_, department in departments.items():
                 print(
@@ -135,17 +153,23 @@ def control():
                         + f"Found:\ndep: {department}\ndate: {date}"
                         + "\x1b[0m"
                     )
-                    break
-                print(
-                    "\x1b[0;30;41m"
-                    + f"Not found\ndep: {department}\ndate: {date}"
-                    + "\x1b[0m"
-                )
-            if found:
-                break
+                    results.append(
+                        "\x1b[6;30;42m" + f"dep: {department}\ndate: {date}" + "\x1b[0m"
+                    )
+                    play_sound()
+                else:
+                    print(
+                        "\x1b[0;30;41m"
+                        + f"Not found\ndep: {department}\ndate: {date}"
+                        + "\x1b[0m"
+                    )
+
         if found:
+            print("\n\nResults:\n" + "\n".join(results))
+            results = []
+
             play_sound()
-            break
+            time.sleep(5)
         time.sleep(5)
 
 
