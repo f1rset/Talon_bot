@@ -40,7 +40,7 @@ def request_data(department: int, service: int, headers: dict):
     response = requests.get(
         f"https://eqn.hsc.gov.ua/api/v2/equeue/days?serviceId={service}&departmentId={department}",
         headers=headers,
-        timeout=100,
+        timeout=1000,
     )
 
     if response.status_code == 200:
