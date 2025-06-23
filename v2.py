@@ -110,6 +110,7 @@ def control():
                     print("   " + "\n   ".join(value))
             time.sleep(5)
         time.sleep(5)
+        found = False
         results = {i: [] for i in departments}
 
 
